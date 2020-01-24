@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost
+    android:id="@+id/tabHost"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TabWidget>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--<LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtviewLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Фильтр"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:textSize="26sp"
+                    />
+            </LinearLayout>-->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtviewList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Поездки"
+                    android:textStyle="bold"
+                    android:gravity="center"
+
+                    android:textSize="26sp"
+                    />
+                <ListView
+                    android:id="@+id/List"
+                    android:layout_width="match_parent"
+                    android:layout_height="460dp">
+                </ListView>
+            </LinearLayout>
+            </ScrollView>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtviewAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Добавить"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <TextView
+                    android:id="@+id/txtviewDateFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Дата отправления"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/buttonDateFrom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="setDateFrom"
+
+                        android:text="Дата"
+                        />
+                    <TextView
+                        android:id="@+id/txtviewDateFromResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Дата отправления"
+
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        />
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txtviewTimeFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Время отправления"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/buttonTimeFrom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="setTimeFrom"
+
+                        android:text="Время"
+                        />
+                    <TextView
+                        android:id="@+id/txtviewTimeFromResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Время отправления"
+
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        />
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txtviewDateTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Дата прибытия"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/buttonDateTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="setDateTo"
+
+                        android:text="Дата"
+                        />
+                    <TextView
+                        android:id="@+id/txtviewDateToResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Дата прибытия"
+
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        />
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txtviewTimeTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Время прибытия"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/buttonTimeTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="setTimeTo"
+
+                        android:text="Время"
+                        />
+                    <TextView
+                        android:id="@+id/txtviewTimeToResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Время прибытия"
+
+                        android:gravity="center"
+                        android:textSize="26sp"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtviewFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Место отправления"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <EditText
+                    android:id="@+id/etextFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:hint="Место отправления" />
+                <TextView
+                    android:id="@+id/txtviewTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Место прибытия"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <EditText
+                    android:id="@+id/etextTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:hint="Место прибытия" />
+                <TextView
+                    android:id="@+id/txtviewCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Количество мест"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <EditText
+                    android:id="@+id/etextCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:hint="Количество мест" />
+                <TextView
+                    android:id="@+id/txtviewTransport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Транспорт"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <EditText
+                    android:id="@+id/etextTransport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:hint="Транспорт" />
+                <TextView
+                    android:id="@+id/txtviewCost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Общая стоимость проезда"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textSize="26sp"
+                    />
+                <EditText
+                    android:id="@+id/etextCost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:hint="Общая стоимость проезда" />
+                <Button
+                    android:id="@+id/buttonAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:background="#7CFC00"
+                    android:textColor="	#ffffff"
+                    android:text="Добавить"
+                    />
+            </LinearLayout>
+            </ScrollView>
+            <!--<LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtviewLoginnnn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Профиль"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:textSize="26sp"
+                    />
+            </LinearLayout>-->
+
+        </FrameLayout>
+    </LinearLayout>
+</TabHost>

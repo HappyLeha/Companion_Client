@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/txtviewHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Авторизация"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="26sp"
+        android:layout_weight="1"
+        android:background="#4169e1"
+        android:textColor="#ffffff"
+        />
+    <TextView
+        android:id="@+id/txtviewLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Логин"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:textSize="26sp"
+        />
+    <EditText
+        android:id="@+id/etextLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:hint="Логин" />
+    <TextView
+        android:id="@+id/txtviewPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Пароль"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:textSize="26sp"
+        />
+    <EditText
+        android:id="@+id/etextPassword"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:hint="Пароль" />
+    <EditText
+        android:id="@+id/etextRepeatPassword"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:hint="Повторите Пароль" />
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:background="#4169e1"
+        android:textColor="#ffffff"
+        android:text="Назад"
+        />
+    <Button
+        android:id="@+id/buttonRegistration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:background="#4169e1"
+        android:textColor="#ffffff"
+        android:text="Зарегестрироваться"
+        />
+</LinearLayout>

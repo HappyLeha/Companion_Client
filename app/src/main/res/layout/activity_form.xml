@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/txtviewsearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Поиск"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <TextView
+            android:id="@+id/txtviewDateFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Дата отправления"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonDateFrom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setDateFrom"
+
+                android:text="Дата"
+                />
+
+            <TextView
+                android:id="@+id/txtviewDateFromResult"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Дата отправления"
+
+                android:gravity="center"
+                android:textSize="26sp"
+                />
+            <Button
+                android:id="@+id/buttonDateFromNull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setDateFrom"
+                android:text="Нет даты"
+
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txtviewDateTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Дата прибытия"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonDateTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setDateTo"
+                android:text="Дата"
+                />
+            <TextView
+                android:id="@+id/txtviewDateToResult"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Дата прибытия"
+
+                android:gravity="center"
+                android:textSize="26sp"
+                />
+            <Button
+                android:id="@+id/buttonDateToNull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setDateTo"
+                android:text="Нет даты"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txtviewTimeStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Начало диапазона времени"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonTimeStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setTimeStart"
+                android:text="Время"
+                />
+            <TextView
+                android:id="@+id/txtviewTimeStartResult"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Начало диапазона времени"
+                android:gravity="center"
+                android:textSize="26sp"
+                />
+            <Button
+                android:id="@+id/buttonTimeStartNull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setTimeStart"
+                android:text="Нет времени"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txtviewTimeEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Конец диапазона времени"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonTimeEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setTimeEnd"
+
+                android:text="Время"
+                />
+            <TextView
+                android:id="@+id/txtviewTimeEndResult"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Конец диапазона времени"
+
+                android:gravity="center"
+                android:textSize="26sp"
+                />
+            <Button
+                android:id="@+id/buttonTimeEndNull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setTimeTo"
+
+                android:text="Нет времени"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtviewFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Место отправления"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <EditText
+            android:id="@+id/etextFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:hint="Не важно" />
+        <TextView
+            android:id="@+id/txtviewTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Место прибытия"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <EditText
+            android:id="@+id/etextTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:hint="Не важно" />
+
+        <TextView
+            android:id="@+id/txtviewCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Максимальная стоимость"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textSize="26sp"
+            />
+        <EditText
+            android:id="@+id/etextCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:hint="Не важно" />
+        <Button
+            android:id="@+id/buttonAccept"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:background="#7CFC00"
+            android:textColor="	#ffffff"
+            android:text="Применить"
+            />
+    </LinearLayout>
+
+</ScrollView>

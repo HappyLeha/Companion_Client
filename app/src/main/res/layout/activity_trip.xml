@@ -227,6 +227,24 @@
     <TableRow>
 
         <Button
+            android:id="@+id/buttonEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:background="#4169e1"
+            android:textColor="#ffffff"
+            android:visibility="gone"
+            android:text="Изменить"
+            />
+    </TableRow>
+    <TableRow>
+
+        <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -236,6 +254,7 @@
             android:layout_marginRight="35dp"
             android:gravity="center"
             android:textSize="13sp"
+            android:visibility="gone"
             android:background="#4169e1"
             android:textColor="#ffffff"
 

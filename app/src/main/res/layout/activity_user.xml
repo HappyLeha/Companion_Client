@@ -84,6 +84,7 @@
             android:layout_weight="1.0"
             android:layout_marginTop="15dp"
             android:gravity="center"
+            android:visibility="gone"
             android:textSize="26sp"
             />
 
@@ -97,6 +98,7 @@
             android:layout_weight="1.0"
             android:layout_marginTop="15dp"
             android:gravity="center"
+            android:visibility="gone"
             android:textSize="26sp"
             />
 
@@ -108,6 +110,7 @@
             android:layout_height="wrap_content"
             android:progress="5"
             android:layout_weight="1.0"
+            android:visibility="gone"
             android:max="5" />
     </TableRow>
     <TableRow>
@@ -121,6 +124,7 @@
             android:layout_marginRight="35dp"
             android:gravity="center"
             android:textSize="26sp"
+            android:visibility="gone"
             android:text="Оценить" />
     </TableRow>
     <TableRow>

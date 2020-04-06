@@ -1,95 +1,31 @@
 package com.example.companion;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@AllArgsConstructor
 public class Trip {
-    static int count=0;
-    public int id;
-    private LocalDateTime datetimeFrom;
-    private LocalDateTime datetimeTo;
+    private int id;
+    private Calendar dateTimeFrom;
+    private Calendar dateTimeTo;
     private String from;
     private String to;
     private int countOfPlaces;
-    private int currentCountOfPlaces=0;
+    private int currentCountOfPlaces;
     private String transport;
     private double cost;
     private String driver;
-    public Trip(LocalDateTime datetimeFrom,LocalDateTime datetimeTo,String from,String to,int countOfPlaces,String transport,double cost,int id,String driver) {
-
-        this.datetimeFrom=datetimeFrom;
-        this.datetimeTo=datetimeTo;
-        this.from=from;
-        this.to=to;
-        this.countOfPlaces=countOfPlaces;
-        this.transport=transport;
-        this.cost=cost;
+    final private ArrayList<String> users=new ArrayList<>();
+    public Trip(int id,String driver,String from,String to) {
         this.id=id;
         this.driver=driver;
-    }
-    public Trip(String from,String to,int id,String driver) {
-
-
         this.from=from;
         this.to=to;
-
-        this.id=id;
-        this.driver=driver;
-    }
-    public static void incrementCount() {
-        count++;
-    }
-    public void setDateTimeFrom(LocalDateTime datetime) {
-        this.datetimeFrom=datetime;
-    }
-    public LocalDateTime getDateTimeFrom() {
-        return datetimeFrom;
-    }
-    public void setDateTimeTo(LocalDateTime datetime) {
-        this.datetimeTo=datetime;
-    }
-    public LocalDateTime getDateTimeTo() {
-        return datetimeTo;
-    }
-    public void setFrom(String from) {
-        this.from=from;
-    }
-    public String getFrom() {
-        return from;
-    }
-    public void setTo(String to) {
-        this.to=to;
-    }
-    public String getTo() {
-        return to;
-    }
-    public void setTransport(String transport) {
-        this.transport=transport;
-    }
-    public String getTransport() {
-        return transport;
-    }
-    public void setCountOfPlaces(int countOfPlaces) {
-        this.countOfPlaces=countOfPlaces;
-    }
-    public int getCountOfPlaces() {
-        return countOfPlaces;
-    }
-    public void setCurrentCountOfPlaces(int currentCountOfPlaces) {
-        this.currentCountOfPlaces=currentCountOfPlaces;
-    }
-    public int getCurrentCountOfPlaces() {
-        return currentCountOfPlaces;
-    }
-    public void setCost(double cost) {
-        this.cost=cost;
-    }
-    public double getCost() {
-        return cost;
-    }
-    public void setDriver(String driver) {
-        this.driver=driver;
-    }
-    public String getDriver() {
-        return driver;
     }
 }

@@ -31,6 +31,12 @@ public class DatabaseAdapter implements AutoCloseable{
     public void close(){
         dbHelper.close();
     }
+    public void refreshUsers(ArrayList<User> users) {
+        database.delete("users",null,null);
+        for (User user:users) {
+            addUser(user);
+        }
+    }
     public User getUser(@NonNull  String login) {
         String[] progection;
         String selection;

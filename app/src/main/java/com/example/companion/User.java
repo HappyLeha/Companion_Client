@@ -10,5 +10,4 @@ import lombok.NonNull;
 public class User {
     @NonNull private String login;
     @NonNull private Integer password;
-    private final ArrayList<String> ratings=new ArrayList<>();
 }

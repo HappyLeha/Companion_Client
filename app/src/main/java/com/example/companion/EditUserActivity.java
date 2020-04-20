@@ -3,6 +3,7 @@ package com.example.companion;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class EditUserActivity extends AppCompatActivity {
 String login;
@@ -112,12 +124,25 @@ boolean isPassword;
             }
         });
         buttonDelete.setOnClickListener((v)->{
-            try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                databaseAdapter.removeUser(login);
+            try {
+                HTTP.UserDelete httpDelete = new HTTP.UserDelete();
+                httpDelete.execute(login);
+                if (httpDelete.get()) {
+                    try (DatabaseAdapter databaseAdapter = new DatabaseAdapter(this)) {
+                        databaseAdapter.removeUser(login);
+                    }
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(this, "Сервер недоступен! Удаление пользователя неаозможно!", Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
-            Intent intent=new Intent(this,MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            catch (Exception e) {
+                Toast toast = Toast.makeText(this, "Сервер недоступен! Удаление пользователя неаозможно!", Toast.LENGTH_LONG);
+                toast.show();
+            }
         });
     }
     @Override
@@ -155,4 +180,5 @@ boolean isPassword;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

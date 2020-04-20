@@ -2,10 +2,21 @@ package com.example.companion;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button buttonLogin;
@@ -33,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
+                HTTP.UsersGet httpGet=new HTTP.UsersGet();
+                httpGet.execute();
+                if (httpGet.get()!=null) databaseAdapter.refreshUsers(httpGet.get());
                 User user = databaseAdapter.getUser(login);
                 if (user == null) {
                     Toast toast = Toast.makeText(this, "Данный пользователь не существует!", Toast.LENGTH_LONG);
@@ -51,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 TripForm.reset();
                 startActivity(intent);
             }
+            catch (Exception e) {
+
+            }
         });
     }
+
 }

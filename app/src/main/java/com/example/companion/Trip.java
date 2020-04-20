@@ -21,7 +21,6 @@ public class Trip {
     private String transport;
     private double cost;
     private String driver;
-    final private ArrayList<String> users=new ArrayList<>();
     public Trip(int id,String driver,String from,String to) {
         this.id=id;
         this.driver=driver;

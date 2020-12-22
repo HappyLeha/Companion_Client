@@ -10,7 +10,7 @@
         android:id="@+id/txtviewHead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Авторизация"
+        android:text="Регистрация"
         android:textStyle="bold"
         android:gravity="center"
         android:textSize="26sp"
@@ -59,17 +59,6 @@
         android:layout_marginLeft="35dp"
         android:layout_marginRight="35dp"
         android:hint="Повторите Пароль" />
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="35dp"
-        android:background="#4169e1"
-        android:textColor="#ffffff"
-        android:text="Назад"
-        />
     <Button
         android:id="@+id/buttonRegistration"
         android:layout_width="match_parent"

@@ -1,8 +1,11 @@
 package com.example.companion;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class TripActivity extends AppCompatActivity {
+    ActionBar actionBar;
     TextView tviewDateTimeFrom;
     TextView tviewDateTimeTo;
     TextView tviewFrom;
@@ -23,10 +27,11 @@ public class TripActivity extends AppCompatActivity {
     Button button;
     String driver;
     String login;
-    boolean isFull;
     boolean isComplieted;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
         Bundle arguments = getIntent().getExtras();
@@ -43,8 +48,39 @@ public class TripActivity extends AppCompatActivity {
         buttonDriver = findViewById(R.id.buttonDriver);
         buttonEdit=findViewById(R.id.buttonEdit);
         button=findViewById(R.id.button);
-try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-    Trip trip = databaseAdapter.getTrip(id);
+        actionBar =getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+try {
+    HTTP.TripGet httpGet=new HTTP.TripGet();
+    Trip trip=null;
+
+    httpGet.execute(id);
+
+    if (httpGet.get()!=null&&httpGet.get().getClass()!=Trip.class) {
+        Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+        toast.show();
+        onClickExit(null);
+
+    }
+    else {
+
+
+
+        if (httpGet.get()==null) {
+
+            trip=null;
+            Toast toast = Toast.makeText(this, "Данная поездка не существует", Toast.LENGTH_LONG);
+            toast.show();
+            onClickTripBack(null);
+        }
+
+        else {
+                trip=(Trip)httpGet.get();
+
+
+        }
+    }
     tviewFrom.setText(trip.getFrom());
     tviewTo.setText(trip.getTo());
     tviewCount.setText(trip.getCountOfPlaces() + "");
@@ -54,14 +90,23 @@ try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
     driver = trip.getDriver();
     tviewDateTimeFrom.setText(Mapper.convertCalendarToString(trip.getDateTimeFrom()));
     tviewDateTimeTo.setText(Mapper.convertCalendarToString(trip.getDateTimeTo()));
-    Double raiting = databaseAdapter.getRatingByUser(driver);
-    if (raiting != null) {
-        buttonDriver.setText(driver + " " + raiting);
-    } else {
-        buttonDriver.setText(driver + " Нет рейтинга");
+    Double raiting;
+    HTTP.RatingsGet httpGet1=new HTTP.RatingsGet();
+    httpGet1.execute(driver);
+    raiting=httpGet1.get();
+    if (raiting==null) {
+        Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+        toast.show();
+        onClickExit(null);
     }
-    if (trip.getCountOfPlaces()==trip.getCurrentCountOfPlaces()) isFull=true;
+    if (!raiting.equals(-1.0)) buttonDriver.setText(driver+" "+raiting);
+    else buttonDriver.setText(driver+" Нет рейтинга");
     if (trip.getDateTimeFrom().compareTo(Calendar.getInstance())<0) isComplieted=true;
+}
+catch (Exception e) {
+    Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+    toast.show();
+    onClickExit(null);
 }
     buttonDriver.setOnClickListener((v) -> {
         Intent intent = new Intent(this, UserActivity.class);
@@ -84,12 +129,23 @@ try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
         if (!isComplieted) buttonEdit.setVisibility(View.VISIBLE);
         button.setText("Удалить");
         button.setOnClickListener((v) -> {
-            try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                Intent intent = new Intent(this, TripListActivity.class);
-                intent.putExtra("login", login);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                databaseAdapter.removeTrip(id);
-                startActivity(intent);
+
+            try {
+                HTTP.TripDelete httpDelete = new HTTP.TripDelete();
+                httpDelete.execute(id);
+                if (httpDelete.get()) {
+                    Intent intent = new Intent(this, TripListActivity.class);
+                    intent.putExtra("login", login);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(this, "Сервер недоступен! Удаление поездки невозможно!", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+            catch (Exception e) {
+                Toast toast = Toast.makeText(this, "Сервер недоступен! Удаление поездки невозможно!", Toast.LENGTH_LONG);
+                toast.show();
             }
         });
 
@@ -98,38 +154,128 @@ try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
         intent.putExtra("login", login);
         intent.putExtra("id", id);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        boolean isPassenger;
-        try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-            isPassenger=databaseAdapter.isConnection(login,id);
+        boolean isPassenger=true;
+        try {
+            //isPassenger=databaseAdapter.isConnection(new Connection(login,id));
+            HTTP.ConnectionHead httpHead = new HTTP.ConnectionHead();
+            httpHead.execute(new Connection(login, id));
+            Toast toast;
+            switch (httpHead.get()) {
+                case 204:
+
+                    onClickTripBack(null);
+                    break;
+                case 404:
+
+
+                    isPassenger=false;
+                    break;
+                case -1:
+                    toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+                    toast.show();
+                    onClickExit(null);
+                    break;
+            }
+        }
+        catch (Exception e) {
+            Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+            toast.show();
+            onClickExit(null);
         }
         if (isPassenger) {
             button.setText("Выписаться");
+
             button.setOnClickListener((v) -> {
-                try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                    databaseAdapter.removeConnection(login,id);
+                Toast toast;
+                try {
+                    HTTP.ConnectionDelete httpDelete = new HTTP.ConnectionDelete();
+                    httpDelete.execute(new Connection(login,id));
+                    switch(httpDelete.get()) {
+                        case 200:
+                            startActivity(intent);
+                            break;
+                        case 204:
+                            toast = Toast.makeText(this, "Данная поездка не существует", Toast.LENGTH_LONG);
+                            toast.show();
+                            onClickTripBack(null);
+                            break;
+                        case -1:
+                            toast = Toast.makeText(this, "Сервер недоступен! Удаление записи невозможно!", Toast.LENGTH_LONG);
+                            toast.show();
+                            break;
+                    }
                 }
-                startActivity(intent);
+                catch (Exception e) {
+                    toast = Toast.makeText(this, "Сервер недоступен! Удаление записи невозможно!", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+
             });
         } else {
-            if (isFull) button.setEnabled(false);
             button.setText("Записаться");
             button.setOnClickListener((v) -> {
-                try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                    databaseAdapter.addConnection(login,id);
-                    /*Toast toast = Toast.makeText(this, login+" "+id, Toast.LENGTH_LONG);
+                try {
+                    HTTP.ConnectionPost httpPost = new HTTP.ConnectionPost();
+                    httpPost.execute(new Connection(login,id));
+                    Toast toast;
+                    switch(httpPost.get()) {
+                        case 201:
+                            startActivity(intent);
+                            break;
+                        case 204:
 
-                    toast.show();*/
+                                toast = Toast.makeText(this, "Данная поездка не существует", Toast.LENGTH_LONG);
+                                toast.show();
+                                onClickTripBack(null);
+
+                            break;
+                        case 409:
+                            toast = Toast.makeText(this, "Мест нет!", Toast.LENGTH_LONG);
+                            toast.show();
+                            startActivity(intent);
+                            break;
+                        case -1:
+                            toast = Toast.makeText(this, "Сервер недоступен! Запись на поездку невозможна!", Toast.LENGTH_LONG);
+                            toast.show();
+                            break;
+                    }
                 }
-                startActivity(intent);
+                catch (Exception e) {
+                    Toast toast = Toast.makeText(this, "Сервер недоступен! Запись на поездку невозможна!", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+
             });
         }
     }
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent=new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
     public void onClickTripBack (View v) {
         Intent intent = new Intent(this, TripListActivity.class);
         intent.putExtra("login", login);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+    public void onClickExit (View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onClickTripBack(null);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
 

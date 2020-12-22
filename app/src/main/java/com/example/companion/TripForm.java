@@ -2,39 +2,37 @@ package com.example.companion;
 
 import java.util.Calendar;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
+@Data
 public class TripForm {
-    @Getter
-    @Setter
-    private static Calendar dateFrom;
-    @Getter
-    @Setter
-    private static Calendar dateTo;
-    @Getter
-    @Setter
-    private static Calendar timeStart;
-    @Getter
-    @Setter
-    private static Calendar timeEnd;
-    @Getter
-    @Setter
-    private static String from;
-    @Getter
-    @Setter
-    private static String to;
-    @Getter
-    @Setter
-    private static Double cost;
+    private Calendar dateFrom;
+    private Calendar dateTo;
+    private Calendar timeStart;
+    private Calendar timeEnd;
+    private String from;
+    private String to;
+    private Double cost;
+    private static TripForm instance=new TripForm(null,null,null,null,null,null,null);
+    private TripForm(Calendar dateFrom,Calendar dateTo,Calendar timeStart,Calendar timeEnd,String from,String to,Double cost) {
+        this.dateFrom=dateFrom;
+        this.dateTo=dateTo;
+        this.timeStart=timeStart;
+        this.timeEnd=timeEnd;
+        this.from=from;
+        this.to=to;
+        this.cost=cost;
+    }
+    public static void set(Calendar dateFrom,Calendar dateTo,Calendar timeStart,Calendar timeEnd,String from,String to,Double cost) {
+        instance=new TripForm(dateFrom,dateTo,timeStart,timeEnd,from,to,cost);
+    }
     public static void reset() {
-        dateFrom=null;
-        dateTo=null;
-        timeStart=null;
-        timeEnd=null;
-        from=null;
-        to=null;
-        cost=null;
+        instance=new TripForm(null,null,null,null,null,null,null);
+    }
+    public static TripForm get() {
+        return instance;
     }
 }

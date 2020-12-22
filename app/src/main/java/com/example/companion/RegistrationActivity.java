@@ -1,9 +1,12 @@
 package com.example.companion;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,24 +24,24 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class RegistrationActivity extends AppCompatActivity {
-    Button buttonBack;
     Button buttonRegistration;
     EditText eTextLogin;
     EditText eTextPassword;
     EditText eTextRepeatPassword;
+    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        buttonBack=findViewById(R.id.buttonBack);
         buttonRegistration=findViewById(R.id.buttonRegistration);
         eTextLogin=findViewById(R.id.etextLogin);
         eTextPassword=findViewById(R.id.etextPassword);
         eTextRepeatPassword=findViewById(R.id.etextRepeatPassword);
-        buttonBack.setOnClickListener((v)->{
-            Intent intent=new Intent(this,MainActivity.class);
-            startActivity(intent);
-        });
+        actionBar =getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         buttonRegistration.setOnClickListener((v)->{
             String login = eTextLogin.getText().toString().trim();
             String password = eTextPassword.getText().toString().trim();
@@ -48,7 +51,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
-            try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
+
+            try  {
 
 
                 if (!password.equals(repeatPassword)) {
@@ -56,20 +60,18 @@ public class RegistrationActivity extends AppCompatActivity {
                     toast.show();
                     return;
                 }
-                User user = new User(login,password.hashCode());
+                User user = new User(-1,login,AES.encrypt(password));
                 HTTP.UserPost httpPost=new HTTP.UserPost();
                 httpPost.execute(user);
                 switch (httpPost.get()) {
                     case HttpURLConnection.HTTP_CREATED: {
-                        Toast toast = Toast.makeText(this, "Пользователь успешно добавлен!", Toast.LENGTH_LONG);
-                        toast.show();
+                        Toast toast;
                         Intent intent = new Intent(this, TripListActivity.class);
                         intent.putExtra("login", login);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         TripForm.reset();
-                        HTTP.UsersGet httpGet=new HTTP.UsersGet();
-                        httpGet.execute();
-                        if (httpGet.get()!=null) databaseAdapter.refreshUsers(httpGet.get());
+                        toast = Toast.makeText(this, "Пользователь успешно добавлен!", Toast.LENGTH_LONG);
+                        toast.show();
                         startActivity(intent);
                         break;
                     }
@@ -79,17 +81,35 @@ public class RegistrationActivity extends AppCompatActivity {
                         break;
                     }
                     default: {
-                        Toast toast = Toast.makeText(this, "Сервер недоступен! Создание пользователя невозможно", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(this, "Сервер недоступен! Создание пользователя невозможно!", Toast.LENGTH_LONG);
                         toast.show();
                     }
                 }
             }
             catch (Exception e) {
-                Toast toast = Toast.makeText(this, "Сервер недоступен! Создание пользователя невозможно", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(this, "Сервер недоступен! Создание пользователя невозможно!", Toast.LENGTH_LONG);
                 toast.show();
             }
         });
     }
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent=new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent=new Intent(this,MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

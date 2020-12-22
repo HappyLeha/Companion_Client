@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -43,10 +44,13 @@ public class FormActivity extends AppCompatActivity {
     boolean dateToIsNull=true;
     boolean timeStartIsNull=true;
     boolean timeEndIsNull=true;
+    TripForm tripForm;
     Intent intent;
     String login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
         buttonAccept=findViewById(R.id.buttonAccept);
@@ -76,31 +80,32 @@ public class FormActivity extends AppCompatActivity {
         timeEnd.set(Calendar.YEAR,0);
         timeEnd.set(Calendar.MONTH,0);
         timeEnd.set(Calendar.DAY_OF_MONTH,0);
-        if (TripForm.getDateFrom()!=null) {
-            dateFrom = TripForm.getDateFrom();
+        tripForm=TripForm.get();
+        if (tripForm.getDateFrom()!=null) {
+            dateFrom = tripForm.getDateFrom();
             setInitialDateFrom();
         }
         else setDateFromNull();
-        if (TripForm.getDateTo()!=null) {
-            dateTo = TripForm.getDateTo();
+        if (tripForm.getDateTo()!=null) {
+            dateTo = tripForm.getDateTo();
             setInitialDateTo();
         }
         else setDateToNull();
-        if (TripForm.getTimeStart()!=null) {
-            timeStart = TripForm.getTimeStart();
+        if (tripForm.getTimeStart()!=null) {
+            timeStart = tripForm.getTimeStart();
             setInitialTimeStart();
         }
         else setTimeStartNull();
-        if (TripForm.getTimeEnd()!=null) {
-            timeEnd=TripForm.getTimeEnd();
+        if (tripForm.getTimeEnd()!=null) {
+            timeEnd=tripForm.getTimeEnd();
             setInitialTimeEnd();
         }
         else setTimeEndNull();
-        if (TripForm.getFrom()!=null) etextFrom.setText(TripForm.getFrom());
+        if (tripForm.getFrom()!=null) etextFrom.setText(tripForm.getFrom());
         else etextFrom.setText("");
-        if (TripForm.getTo()!=null) etextTo.setText(TripForm.getTo());
+        if (tripForm.getTo()!=null) etextTo.setText(tripForm.getTo());
         else etextTo.setText("");
-        if (TripForm.getCost()!=null) etextCost.setText(TripForm.getCost()+"");
+        if (tripForm.getCost()!=null) etextCost.setText(tripForm.getCost()+"");
         else etextCost.setText("");
         buttonDateFrom.setOnClickListener((v)->{
             setDateFromNull();
@@ -166,17 +171,18 @@ public class FormActivity extends AppCompatActivity {
 
                 /*Trip trip = new Trip(-1, dateTimeFrom, dateTimeTo, from, to, Integer.parseInt(count),
                         0, transport, Double.parseDouble(cost), login);*/
-                if (dateFromIsNull) TripForm.setDateFrom(null);
-                else TripForm.setDateFrom(dateFrom);
-                if (dateToIsNull) TripForm.setDateTo(null);
-                else TripForm.setDateTo(dateTo);
-                if (timeStartIsNull) TripForm.setTimeStart(null);
-                else TripForm.setTimeStart(timeStart);
-                if (timeEndIsNull) TripForm.setTimeEnd(null);
-                else TripForm.setTimeEnd(timeEnd);
-                TripForm.setFrom(from);
-                TripForm.setTo(to);
-                if (cost!=null) TripForm.setCost(Double.parseDouble(cost));
+                if (dateFromIsNull) tripForm.setDateFrom(null);
+                else tripForm.setDateFrom(dateFrom);
+                if (dateToIsNull) tripForm.setDateTo(null);
+                else tripForm.setDateTo(dateTo);
+                if (timeStartIsNull) tripForm.setTimeStart(null);
+                else tripForm.setTimeStart(timeStart);
+                if (timeEndIsNull) tripForm.setTimeEnd(null);
+                else tripForm.setTimeEnd(timeEnd);
+                tripForm.setFrom(from);
+                tripForm.setTo(to);
+                if (cost!=null) tripForm.setCost(Double.parseDouble(cost));
+                else tripForm.setCost(null);
                 intent=new Intent(this, TripListActivity.class);
                 intent.putExtra("login",login);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -187,6 +193,13 @@ public class FormActivity extends AppCompatActivity {
 
         });
 
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent=new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
     private void setInitialDateFrom() {
 

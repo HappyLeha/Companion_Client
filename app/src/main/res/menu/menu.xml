@@ -20,5 +20,4 @@
         android:id="@+id/exit"
         android:orderInCategory="5"
         android:title="Выйти" />
-
 </menu>

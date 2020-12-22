@@ -1,18 +1,28 @@
 package com.example.companion;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Trip {
     private int id;
+    @JsonSerialize(using= CalendarSerializer.class)
+    @JsonDeserialize(using= CalendarDeserializer.class)
     private Calendar dateTimeFrom;
+    @JsonSerialize(using= CalendarSerializer.class)
+    @JsonDeserialize(using= CalendarDeserializer.class)
     private Calendar dateTimeTo;
     private String from;
     private String to;

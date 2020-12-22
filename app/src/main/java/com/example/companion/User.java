@@ -3,11 +3,15 @@ package com.example.companion;
 import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    @NonNull private String login;
-    @NonNull private Integer password;
+    private int id;
+    private String login;
+    private byte[] password;
 }

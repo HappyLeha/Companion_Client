@@ -1,5 +1,6 @@
 package com.example.companion;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -10,6 +11,7 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -17,11 +19,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 
 public class EditTripActivity extends AppCompatActivity {
     Button buttonEdit;
-    Button buttonBack;
     EditText eTextFrom;
     EditText eTextTo;
     EditText eTextCount;
@@ -31,6 +33,7 @@ public class EditTripActivity extends AppCompatActivity {
     TextView tviewTimeFromResult;
     TextView tviewDateToResult;
     TextView tviewTimeToResult;
+    ActionBar actionBar;
     Calendar dateFrom;
     Calendar timeFrom;
     Calendar dateTo;
@@ -39,9 +42,12 @@ public class EditTripActivity extends AppCompatActivity {
     Calendar dateTimeTo;
     Intent intent;
     String login;
+    int id;
     Trip trip;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_trip);
         dateFrom= Calendar.getInstance();
@@ -51,7 +57,6 @@ public class EditTripActivity extends AppCompatActivity {
         dateTimeFrom=Calendar.getInstance();
         dateTimeTo=Calendar.getInstance();
         buttonEdit=findViewById(R.id.buttonEdit);
-        buttonBack=findViewById(R.id.buttonBack);
         eTextFrom=findViewById(R.id.etextFrom);
         eTextTo=findViewById(R.id.etextTo);
         eTextCount=findViewById(R.id.etextCount);
@@ -63,7 +68,7 @@ public class EditTripActivity extends AppCompatActivity {
         tviewTimeToResult=findViewById(R.id.txtviewTimeToResult);
         Bundle arguments = getIntent().getExtras();
         login = arguments.get("login").toString();
-        int id = arguments.getInt("id");
+        id = arguments.getInt("id");
         dateFrom.set(Calendar.HOUR_OF_DAY,0);
         dateFrom.set(Calendar.MINUTE,0);
         dateTo.set(Calendar.HOUR_OF_DAY,0);
@@ -74,8 +79,24 @@ public class EditTripActivity extends AppCompatActivity {
         timeTo.set(Calendar.YEAR,0);
         timeTo.set(Calendar.MONTH,0);
         timeTo.set(Calendar.DAY_OF_MONTH,0);
-        try(DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-            trip=databaseAdapter.getTrip(id);
+        actionBar =getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        try {
+            HTTP.TripGet httpGet=new HTTP.TripGet();
+            trip=null;
+
+            httpGet.execute(id);
+
+            if (httpGet.get()!=null&&httpGet.get().getClass()!=Trip.class) {
+                Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+                toast.show();
+                onClickExit(null);
+
+            }
+            else {
+                    trip=(Trip)httpGet.get();
+            }
             eTextFrom.setText(trip.getFrom());
             eTextTo.setText(trip.getTo());
             eTextCost.setText(trip.getCost()+"");
@@ -85,6 +106,11 @@ public class EditTripActivity extends AppCompatActivity {
             timeFrom=trip.getDateTimeFrom();
             dateTo=trip.getDateTimeTo();
             timeTo=trip.getDateTimeTo();
+        }
+        catch (Exception e) {
+            Toast toast = Toast.makeText(this, "Сервер недоступен!", Toast.LENGTH_LONG);
+            toast.show();
+            onClickExit(null);
         }
         setInitialDateTime();
         buttonEdit.setOnClickListener((v)->{
@@ -153,34 +179,44 @@ public class EditTripActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
-            try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                Trip сhangedTrip = new Trip(trip.getId(), dateTimeFrom, dateTimeTo, from, to, Integer.parseInt(count),
+            try  {
+                Trip changedTrip = new Trip(trip.getId(), dateTimeFrom, dateTimeTo, from, to, Integer.parseInt(count),
                         trip.getCurrentCountOfPlaces(), transport, Double.parseDouble(cost), trip.getDriver());
-                databaseAdapter.setTrip(сhangedTrip);
+                //databaseAdapter.setTrip(сhangedTrip);
+                HTTP.TripPut httpPut=new HTTP.TripPut();
+                httpPut.execute(id,changedTrip);
+                switch (httpPut.get()) {
+                    case HttpURLConnection.HTTP_OK: {
+                        Toast toast = Toast.makeText(this, "Поездка успешно изменена!", Toast.LENGTH_LONG);
+                        toast.show();
+                        Intent intent = new Intent(this, TripActivity.class);
+                        intent.putExtra("login",login);
+                        intent.putExtra("id",id);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        break;
+                    }
+                    default: {
+                        Toast toast = Toast.makeText(this, "Сервер недоступен! Изменение поездки невозможно", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
 
+            }
+            catch (Exception e) {
+                Toast toast = Toast.makeText(this, "Сервер недоступен! Изменение поездки невозможно", Toast.LENGTH_LONG);
+                toast.show();
             }
 
 
-
-            Toast toast = Toast.makeText(this, "Поездка успешно изменена!", Toast.LENGTH_LONG);
-
-            toast.show();
-
-            intent = new Intent(this, TripActivity.class);
-            intent.putExtra("login",login);
-            intent.putExtra("id",id);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-
-
         });
-        buttonBack.setOnClickListener((v)->{
-        intent = new Intent(this, TripActivity.class);
-        intent.putExtra("login",login);
-        intent.putExtra("id",id);
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent=new Intent(this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        });
     }
     private void setInitialDateTime() {
 
@@ -264,5 +300,29 @@ public class EditTripActivity extends AppCompatActivity {
                 timeTo.get(Calendar.MINUTE), true)
                 .show();
     }
-
+    public void onClickTripBack (View v) {
+        Intent intent = new Intent(this, TripListActivity.class);
+        intent.putExtra("login", login);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    public void onClickExit (View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                intent = new Intent(this, TripActivity.class);
+                intent.putExtra("login",login);
+                intent.putExtra("id",id);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

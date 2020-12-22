@@ -8,12 +8,15 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 
 public class CreateTripActivity extends AppCompatActivity {
@@ -37,6 +40,8 @@ public class CreateTripActivity extends AppCompatActivity {
     String login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trip);
         dateFrom= Calendar.getInstance();
@@ -124,27 +129,41 @@ public class CreateTripActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
-            try (DatabaseAdapter databaseAdapter=new DatabaseAdapter(this)) {
-                Trip trip = new Trip(-1, dateTimeFrom, dateTimeTo,from, to, Integer.parseInt(count),
+            try  {
+               Trip trip = new Trip(-1, dateTimeFrom, dateTimeTo,from, to, Integer.parseInt(count),
                         0, transport, Double.parseDouble(cost), login);
-                databaseAdapter.addTrip(trip);
-
+               HTTP.TripPost httpPost=new HTTP.TripPost();
+               httpPost.execute(trip);
+                switch (httpPost.get()) {
+                    case HttpURLConnection.HTTP_CREATED: {
+                        Toast toast;
+                        Intent intent = new Intent(this, TripListActivity.class);
+                        intent.putExtra("login", login);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        toast = Toast.makeText(this, "Поездка успешно добавлена!", Toast.LENGTH_LONG);
+                        toast.show();
+                        startActivity(intent);
+                        break;
+                    }
+                    default: {
+                        Toast toast = Toast.makeText(this, "Сервер недоступен! Создание поездки невозможно", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
             }
-
-
-
-            Toast toast = Toast.makeText(this, "Поездка успешно создана!", Toast.LENGTH_LONG);
-
-            toast.show();
-
-            intent = new Intent(this, TripListActivity.class);
-            intent.putExtra("login",login);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-
-
+            catch (Exception e) {
+                Toast toast = Toast.makeText(this, "Сервер недоступен! Создание поездки невозможно", Toast.LENGTH_LONG);
+                toast.show();
+            }
         });
 
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Intent intent=new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
     private void setInitialDateTime() {
 

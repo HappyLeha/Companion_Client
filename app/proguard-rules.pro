@@ -1,21 +1,35 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+import 'dart:async';
+import 'dart:io';
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+
+class TextStorageApplicationSupportDirectory {
+  Future<String> get _localPath async {
+    final directory = await  getTemporaryDirectory();
+
+
+    return directory.path;
+  }
+ 
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/text.txt');
+  }
+ 
+  Future<String> readFile() async {
+    try {
+      final file = await _localFile;
+ 
+      String content = await file.readAsString();
+      return content;
+    } catch (e) {
+      return '';
+    }
+  }
+ 
+  Future<File> writeFile(String text) async {
+    final file = await
